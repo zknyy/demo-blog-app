@@ -1,3 +1,147 @@
+# 演示应用 blog
+
+## 准备
+
+建议先做好以下准备
+
+1. 安装 JDK9+ （建议 JDK11）
+2. 安装 IntelJ IDEA
+3. 安装 Maven 并配置环境变量和国内镜像仓库
+4. 安装 NodeJS 和 npm 并配置国内镜像仓库
+5. 安装 Docker 配置国内镜像仓库
+6. 安装 docker-compose
+7. 安装 Kubernates 和 Helm
+
+## 安装 JHipster
+
+执行
+
+```shell
+npm install -g generator-jhipster
+```
+
+创建目录，执行
+
+```shell
+mkdir myApp && cd myApp
+```
+
+初始化项目，执行
+
+```shell
+jhipster
+```
+
+得到如下（其中有些步骤是需要根据实际情况进行选择的）
+
+```
+INFO! Using JHipster version installed globally
+INFO! Running default command
+INFO! Executing jhipster:app
+INFO! Options: from-cli: true
+
+
+        ██╗ ██╗   ██╗ ████████╗ ███████╗   ██████╗ ████████╗ ████████╗ ███████╗
+        ██║ ██║   ██║ ╚══██╔══╝ ██╔═══██╗ ██╔════╝ ╚══██╔══╝ ██╔═════╝ ██╔═══██╗
+        ██║ ████████║    ██║    ███████╔╝ ╚█████╗     ██║    ██████╗   ███████╔╝
+  ██╗   ██║ ██╔═══██║    ██║    ██╔════╝   ╚═══██╗    ██║    ██╔═══╝   ██╔══██║
+  ╚██████╔╝ ██║   ██║ ████████╗ ██║       ██████╔╝    ██║    ████████╗ ██║  ╚██╗
+   ╚═════╝  ╚═╝   ╚═╝ ╚═══════╝ ╚═╝       ╚═════╝     ╚═╝    ╚═══════╝ ╚═╝   ╚═╝
+
+                            https://www.jhipster.tech
+
+Welcome to JHipster v6.9.1
+Application files will be generated in folder: /Users/demo/git/demo-blog-app
+ _______________________________________________________________________________________________________________
+
+  Documentation for creating an application is at https://www.jhipster.tech/creating-an-app/
+  If you find JHipster useful, consider sponsoring the project at https://opencollective.com/generator-jhipster
+ _______________________________________________________________________________________________________________
+
+WARNING! Java 8, 11, or 12 are not found on your computer. Your Java version is: 13.0.1
+WARNING! Your Node version is not LTS (Long Term Support), use it at your own risk! JHipster does not support non-LTS releases, so if you encounter a bug, please use a LTS version first.
+? Which *type* of application would you like to create? Monolithic application (recommended for simple projects)
+? [Beta] Do you want to make it reactive with Spring WebFlux? No
+? What is the base name of your application? blog
+? What is your default Java package name? com.demo.blog
+? Do you want to use the JHipster Registry to configure, monitor and scale your application? No
+? Which *type* of authentication would you like to use? JWT authentication (stateless, with a token)
+? Which *type* of database would you like to use? SQL (H2, MySQL, MariaDB, PostgreSQL, Oracle, MSSQL)
+? Which *production* database would you like to use? MariaDB
+? Which *development* database would you like to use? H2 with disk-based persistence
+? Do you want to use the Spring cache abstraction? Yes, with the Redis implementation
+? Do you want to use Hibernate 2nd level cache? Yes
+? Would you like to use Maven or Gradle for building the backend? Maven
+? Which other technologies would you like to use?
+? Which *Framework* would you like to use for the client? Angular
+? Would you like to use a Bootswatch theme (https://bootswatch.com/)? Default JHipster
+? Would you like to enable internationalization support? Yes
+? Please choose the native language of the application Chinese (Simplified)
+? Please choose additional languages to install English
+? Besides JUnit and Jest, which testing frameworks would you like to use?
+? Would you like to install other generators from the JHipster Marketplace? No
+
+Installing languages: zh-cn, en
+Git repository initialized.
+Generating 2,048 bit RSA key pair and self-signed certificate (SHA256withRSA) with a validity of 99,999 days
+	for: CN=Java Hipster, OU=Development, O=com.demo.blog, L=, ST=, C=
+
+KeyStore 'src/main/resources/config/tls/keystore.p12' generated successfully.
+
+```
+
+此项目的主要特性如下：
+
+1. Monolithic application （准备用 Kubernates 来编排应用）
+2. 数据库方面：开发环境用 H2, 生产用 MariaDB （准备用 Kubernates 来编排）
+3. 使用 Redis 来做分布式缓存 （准备用 Kubernates 来编排）
+4. 暂时没有使用搜索引擎，消息队列，Kafka 等中间件
+5. 支持国际化（中文和英文）
+
+## 启动
+
+先启动本地的 Redis 服务
+
+```shell
+docker-compose -f ./src/main/docker/redis.yml up -d
+```
+
+启动服务
+
+```shell
+./mvnw
+```
+
+中间有一些报错，得到
+
+```shell
+......
+java.lang.UnsupportedOperationException: Reflective setAccessible(true) disabled
+......
+java.lang.IllegalAccessException: class io.netty.util.internal.PlatformDependent0$6 cannot access class jdk.internal.misc.Unsafe (in module java.base) because module java.base does not export jdk.internal.misc to unnamed module @41ddddf0
+....
+2020-06-19 16:18:44.041  INFO 7124 --- [  restartedMain] com.demo.blog.BlogApp                    : Started BlogApp in 11.86 seconds (JVM running for 12.813)
+2020-06-19 16:18:44.046  INFO 7124 --- [  restartedMain] com.demo.blog.BlogApp                    :
+----------------------------------------------------------
+        Application 'blog' is running! Access URLs:
+        Local:          http://localhost:8080/
+        External:       http://127.0.0.1:8080/
+        Profile(s):     [dev, swagger]
+----------------------------------------------------------
+```
+
+> 好像还是 Redis 有问题。
+
+浏览器打开 http://localhost:8080/
+
+![welcome](.\screenshot\welcome.png)
+
+# [TODO...]
+
+# 以下是 JHipster Readme
+
+---
+
 # blog
 
 This application was generated using JHipster 6.9.1, you can find documentation and help at [https://www.jhipster.tech/documentation-archive/v6.9.1](https://www.jhipster.tech/documentation-archive/v6.9.1).
