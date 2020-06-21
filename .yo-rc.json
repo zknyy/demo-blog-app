@@ -1,0 +1,43 @@
+{
+  "generator-jhipster": {
+    "promptValues": {
+      "packageName": "com.demo.blog",
+      "nativeLanguage": "zh-cn"
+    },
+    "jhipsterVersion": "6.9.1",
+    "applicationType": "monolith",
+    "baseName": "blog",
+    "packageName": "com.demo.blog",
+    "packageFolder": "com/demo/blog",
+    "serverPort": "8080",
+    "authenticationType": "jwt",
+    "cacheProvider": "redis",
+    "enableHibernateCache": true,
+    "websocket": false,
+    "databaseType": "sql",
+    "devDatabaseType": "h2Disk",
+    "prodDatabaseType": "mariadb",
+    "searchEngine": false,
+    "messageBroker": false,
+    "serviceDiscoveryType": false,
+    "buildTool": "maven",
+    "enableSwaggerCodegen": false,
+    "jwtSecretKey": "YTE0ZjY2ZWI1YTY5YmI0NTI1YWM4ODM1ZTE5ZjEwNDM3OTJmMDJhNGNlOGQxOTlmMDYzNGVkOTRjMGQ1YmQ3N2U5ZGRhYzE0MmFhZjdhOWQ1NDM1MDUyMjY4NWYzMzI3ZjA4MTUyNzIzOWRiMzg4MDk1MWRlNDE0YjcyM2NiZTU=",
+    "embeddableLaunchScript": false,
+    "useSass": true,
+    "clientPackageManager": "npm",
+    "clientFramework": "angularX",
+    "clientTheme": "none",
+    "clientThemeVariant": "",
+    "creationTimestamp": 1592721637964,
+    "testFrameworks": [],
+    "jhiPrefix": "jhi",
+    "entitySuffix": "",
+    "dtoSuffix": "DTO",
+    "otherModules": [],
+    "enableTranslation": true,
+    "nativeLanguage": "zh-cn",
+    "languages": ["zh-cn", "en"],
+    "blueprints": []
+  }
+}
