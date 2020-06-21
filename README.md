@@ -23,7 +23,7 @@ npm install -g generator-jhipster
 创建目录，执行
 
 ```shell
-mkdir myApp && cd myApp
+mkdir  demo-blog-app  && cd  demo-blog-app
 ```
 
 初始化项目，执行
@@ -112,16 +112,10 @@ docker-compose -f ./src/main/docker/redis.yml up -d
 ./mvnw
 ```
 
-中间有一些报错，得到
+得到
 
 ```shell
 ......
-java.lang.UnsupportedOperationException: Reflective setAccessible(true) disabled
-......
-java.lang.IllegalAccessException: class io.netty.util.internal.PlatformDependent0$6 cannot access class jdk.internal.misc.Unsafe (in module java.base) because module java.base does not export jdk.internal.misc to unnamed module @41ddddf0
-....
-2020-06-19 16:18:44.041  INFO 7124 --- [  restartedMain] com.demo.blog.BlogApp                    : Started BlogApp in 11.86 seconds (JVM running for 12.813)
-2020-06-19 16:18:44.046  INFO 7124 --- [  restartedMain] com.demo.blog.BlogApp                    :
 ----------------------------------------------------------
         Application 'blog' is running! Access URLs:
         Local:          http://localhost:8080/
@@ -129,8 +123,6 @@ java.lang.IllegalAccessException: class io.netty.util.internal.PlatformDependent
         Profile(s):     [dev, swagger]
 ----------------------------------------------------------
 ```
-
-> 好像还是 Redis 有问题。
 
 浏览器打开 http://localhost:8080/
 
