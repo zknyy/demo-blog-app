@@ -294,48 +294,11 @@ docker-compose -f ./src/main/docker/mariadb.yml up -d
 ```yaml
 version: '2'
 services:
+  # Refers to https://github.com/fuadajip/dockercompose-mysql-phpmyadmin
   blog-phpmyadmin:
     image: phpmyadmin/phpmyadmin
-    ports:
-      - '7777:80'
-```
-
-执行
-
-```shell
-docker-compose -f ./src/main/docker/phpmyadmin.yml up -d
-```
-
-打开浏览器 http://localhost:7777
-
-```
-docker run --name phpmyadmin -d -p 7777:80 phpmyadmin/phpmyadmin
-```
-
-## 结合 MariaDB + phpmyadmin
-
-修改文件：./src/main/docker/mariadb.yml
-
-```yaml
-version: '2'
-services:
-  blog-mariadb:
-    image: mariadb:10.5.3
-    # volumes:
-    #     - ~/volumes/jhipster/blog/mysql/:/var/lib/mysql/
-    environment:
-      - MYSQL_USER=root
-      - MYSQL_ALLOW_EMPTY_PASSWORD=yes
-      - MYSQL_DATABASE=blog
-    ports:
-      - 3306:3306
-    command: mysqld --lower_case_table_names=1 --skip-ssl --character_set_server=utf8mb4 --explicit_defaults_for_timestamp
-
-    # Refers to https://github.com/fuadajip/dockercompose-mysql-phpmyadmin
-  blog-phpmyadmin:
-    image: phpmyadmin/phpmyadmin
-    links:
-      - blog-mariadb
+    # links:
+    #   - blog-mariadb
     ports:
       - '7777:80'
     environment:
@@ -348,6 +311,39 @@ services:
       - MYSQL_ROOT_PASSWORD=
     restart: always
 ```
+
+
+
+## 结合 MariaDB + phpmyadmin
+
+创建文件 src/main/docker/mariadb-phpmyadmin.yml 用于单独启动MariaDB + phpmyadmin
+
+```shell
+version: '2'
+services:
+  blog-mariadb:
+    extends:
+      file: mariadb.yml
+      service: blog-mariadb
+  blog-phpmyadmin:
+    extends:
+      file: phpmyadmin.yml
+      service: blog-phpmyadmin
+```
+
+执行
+
+```shell
+docker-compose -f ./src/main/docker/mariadb-phpmyadmin.yml up -d
+```
+
+打开浏览器 http://localhost:7777 用户名 root，密码为空，得到
+
+![](https://raw.githubusercontent.com/zknyy/demo-blog-app/master/screenshot/phpmyadmin.png)
+
+
+
+
 
 ## 构建 Docker 镜像
 
@@ -409,6 +405,39 @@ blog             latest     e5a275f41e16        4 minutes ago       297MB
 
 ## 容器整合 docker-compose 启动
 
+修改文件：./src/main/docker/app.yml  增加对 blog-phpmyadmin 引用
+
+```yaml
+version: '2'
+services:
+  blog-app:
+    image: blog
+    environment:
+      - _JAVA_OPTIONS=-Xmx512m -Xms256m
+      - SPRING_PROFILES_ACTIVE=prod,swagger
+      - MANAGEMENT_METRICS_EXPORT_PROMETHEUS_ENABLED=true
+      - SPRING_DATASOURCE_URL=jdbc:mariadb://blog-mariadb:3306/blog?useLegacyDatetimeCode=false&serverTimezone=UTC
+      - JHIPSTER_CACHE_REDIS_SERVER=redis://blog-redis:6379
+      - JHIPSTER_CACHE_REDIS_CLUSTER=false
+      # - JHIPSTER_CACHE_REDIS_SERVER=redis://blog-redis:6379
+      # - JHIPSTER_CACHE_REDIS_CLUSTER=true
+      - JHIPSTER_SLEEP=120 # gives time for mariadb server to start
+    ports:
+      - 8080:8080
+  blog-mariadb:
+    extends:
+      file: mariadb.yml
+      service: blog-mariadb
+  blog-redis:
+    extends:
+      file: redis.yml
+      service: blog-redis
+  blog-phpmyadmin:
+    extends:
+      file: phpmyadmin.yml
+      service: blog-phpmyadmin
+```
+
 执行
 
 ```shell
@@ -419,9 +448,10 @@ docker-compose -f app.yml up -d
 
 ```
 Creating network "docker_default" with the default driver
-Creating docker_blog-redis_1   ... done
-Creating docker_blog-app_1     ... done
-Creating docker_blog-mariadb_1 ... done
+Creating docker_blog-app_1        ... done
+Creating docker_blog-mariadb_1    ... done
+Creating docker_blog-redis_1      ... done
+Creating docker_blog-phpmyadmin_1 ... done
 ```
 
 等待 120 秒后（The application will start in 120s...），打开浏览器访问 http://localhost:8080/ 得到
