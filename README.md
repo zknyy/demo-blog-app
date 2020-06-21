@@ -100,22 +100,117 @@ KeyStore 'src/main/resources/config/tls/keystore.p12' generated successfully.
 
 ## 启动
 
-先启动本地的 Redis 服务
-
-```shell
-docker-compose -f ./src/main/docker/redis.yml up -d
-```
-
 启动服务
 
 ```shell
 ./mvnw
 ```
 
-得到
+1. 下载 Maven 插件和依赖
+
+2. 安装 nodejs
+
+   ```shell
+   [INFO] Installing node version v12.16.1
+   [INFO] Unpacking /Users/demo/.m2/repository/com/github/eirslett/node/12.16.1/node-12.16.1-darwin-x64.tar.gz into /Users/demo/git/demo-blog-app/node/tmp
+   [INFO] Copying node binary from /Users/demo/git/demo-blog-app/node/tmp/node-v12.16.1-darwin-x64/bin/node to /Users/demo/git/demo-blog-app/node/node
+   [INFO] Installed node locally.
+   [INFO] Installing npm version 6.14.5
+   [INFO] Downloading https://registry.npmjs.org/npm/-/npm-6.14.5.tgz to /Users/demo/.m2/repository/com/github/eirslett/npm/6.14.5/npm-6.14.5.tar.gz
+   [INFO] No proxies configured
+   [INFO] No proxy was configured, downloading directly
+   [INFO] Unpacking /Users/demo/.m2/repository/com/github/eirslett/npm/6.14.5/npm-6.14.5.tar.gz into /Users/demo/git/demo-blog-app/node/node_modules
+   [INFO] Installed npm locally.
+   ```
+
+3. 初始化/安装 项目
+
+   ```shell
+   [INFO] Running 'npm install' in /Users/demo/git/demo-blog-app
+   ...
+   [INFO]
+   [INFO] audited 2409 packages in 18.135s
+   [INFO]
+   [INFO] 74 packages are looking for funding
+   [INFO]   run `npm fund` for details
+   [INFO]
+   [INFO] found 4 vulnerabilities (3 low, 1 high)
+   [INFO]   run `npm audit fix` to fix them, or `npm audit` for details
+   ```
+
+4. 给出前端操作提示
+
+   ```shell
+   [INFO] --- frontend-maven-plugin:1.10.0:npm (webpack build dev) @ blog ---
+   [INFO] npm not inheriting proxy config from Maven
+   [INFO] Running 'npm run webpack:build' in /Users/demo/git/demo-blog-app
+   [INFO]
+   [INFO] > blog@0.0.1-SNAPSHOT webpack:build /Users/demo/git/demo-blog-app
+   [INFO] > npm run cleanup && npm run webpack:build:main
+   [INFO]
+   [INFO]
+   [INFO] > blog@0.0.1-SNAPSHOT cleanup /Users/demo/git/demo-blog-app
+   [INFO] > rimraf target/classes/static/ target/classes/aot
+   [INFO]
+   [INFO]
+   [INFO] > blog@0.0.1-SNAPSHOT webpack:build:main /Users/demo/git/demo-blog-app
+   [INFO] > npm run webpack -- --config webpack/webpack.dev.js --env.stats=minimal
+   [INFO]
+   [INFO]
+   [INFO] > blog@0.0.1-SNAPSHOT webpack /Users/demo/git/demo-blog-app
+   [INFO] > node --max_old_space_size=4096 node_modules/webpack/bin/webpack.js "--config" "webpack/webpack.dev.js" "--env.stats=minimal"
+   ```
+
+5. 执行 Webpack
+
+   ```shell
+   [INFO] Webpack: Starting ...
+   ...
+   Webpack: Starting ...
+   [INFO]
+   [INFO]    ✔ Compile modules
+   [INFO]    ✔ Build modules
+   [INFO]    ✔ Optimize modules
+   [INFO]    ✔ Emit files
+   [INFO]
+   [INFO] Webpack: Finished after 51.035 seconds.
+   [INFO]
+   [INFO]  DONE  Compiled successfully in 51043ms2:56:15 PM
+   [INFO]
+   [INFO]    460 modules
+
+   ```
+
+6. 启动后台 BlogApp
+
+   ```shell
+   [INFO] --- spring-boot-maven-plugin:2.2.7.RELEASE:run (default-cli) @ blog ---
+   [INFO] Attaching agents: []
+
+           ██╗ ██╗   ██╗ ████████╗ ███████╗   ██████╗ ████████╗ ████████╗ ███████╗
+           ██║ ██║   ██║ ╚══██╔══╝ ██╔═══██╗ ██╔════╝ ╚══██╔══╝ ██╔═════╝ ██╔═══██╗
+           ██║ ████████║    ██║    ███████╔╝ ╚█████╗     ██║    ██████╗   ███████╔╝
+     ██╗   ██║ ██╔═══██║    ██║    ██╔════╝   ╚═══██╗    ██║    ██╔═══╝   ██╔══██║
+     ╚██████╔╝ ██║   ██║ ████████╗ ██║       ██████╔╝    ██║    ████████╗ ██║  ╚██╗
+      ╚═════╝  ╚═╝   ╚═╝ ╚═══════╝ ╚═╝       ╚═════╝     ╚═╝    ╚═══════╝ ╚═╝   ╚═╝
+
+   :: JHipster 🤓  :: Running Spring Boot 2.2.7.RELEASE ::
+   :: https://www.jhipster.tech ::
+   ```
+
+7. 最后得到
 
 ```shell
-......
+......（中间有一段报错）
+2020-06-21 14:56:49.632 DEBUG 5856 --- [  restartedMain] i.g.j.c.apidoc.SwaggerAutoConfiguration  : Starting Swagger
+2020-06-21 14:56:49.648 DEBUG 5856 --- [  restartedMain] i.g.j.c.apidoc.SwaggerAutoConfiguration  : Started Swagger in 14 ms
+WARNING: An illegal reflective access operation has occurred
+WARNING: Illegal reflective access by org.xnio.nio.NioXnio$2 (file:/Users/demo/.m2/repository/org/jboss/xnio/xnio-nio/3.3.8.Final/xnio-nio-3.3.8.Final.jar) to constructor sun.nio.ch.KQueueSelectorProvider()
+WARNING: Please consider reporting this to the maintainers of org.xnio.nio.NioXnio$2
+WARNING: Use --illegal-access=warn to enable warnings of further illegal reflective access operations
+WARNING: All illegal access operations will be denied in a future release
+2020-06-21 14:56:50.630  INFO 5856 --- [  restartedMain] com.demo.blog.BlogApp                    : Started BlogApp in 16.274 seconds (JVM running for 17.366)
+2020-06-21 14:56:50.638  INFO 5856 --- [  restartedMain] com.demo.blog.BlogApp                    :
 ----------------------------------------------------------
         Application 'blog' is running! Access URLs:
         Local:          http://localhost:8080/
@@ -125,6 +220,211 @@ docker-compose -f ./src/main/docker/redis.yml up -d
 ```
 
 浏览器打开 http://localhost:8080/
+
+![welcome](https://raw.githubusercontent.com/zknyy/demo-blog-app/master/screenshot/welcome.png)
+
+# 环境依赖
+
+## Maven
+
+查看当前激活的 profile
+
+```shell
+./mvnw help:active-profiles
+```
+
+得到
+
+```shell
+[INFO]
+Active Profiles for Project 'com.demo.blog:blog:jar:0.0.1-SNAPSHOT':
+
+The following profiles are active:
+
+ - webpack (source: com.demo.blog:blog:0.0.1-SNAPSHOT)
+ - dev (source: com.demo.blog:blog:0.0.1-SNAPSHOT)
+```
+
+激活/取消激活 profile [貌似下面的命令不起作用，应该用 mvn]
+
+```shell
+./mvnw package --activate-profiles prod
+./mvnw package -P !prod
+```
+
+用不同的 profile 来启动，执行
+
+```shell
+./mvnw -P prod,swagger
+```
+
+得到
+
+```shell
+2020-06-21 16:28:06.721  INFO 7812 --- [           main] com.demo.blog.BlogApp                    : Started BlogApp in 12.252 seconds (JVM running for 12.69)
+2020-06-21 16:28:06.730  INFO 7812 --- [           main] com.demo.blog.BlogApp                    :
+----------------------------------------------------------
+        Application 'blog' is running! Access URLs:
+        Local:          http://localhost:8080/
+        External:       http://127.0.0.1:8080/
+        Profile(s):     [prod, swagger]
+----------------------------------------------------------
+```
+
+## Redis
+
+启动 Redis 服务
+
+```shell
+docker-compose -f ./src/main/docker/redis.yml up -d
+```
+
+## MariaDB
+
+启动 MariaDB 服务
+
+```shell
+docker-compose -f ./src/main/docker/mariadb.yml up -d
+```
+
+## phpmyadmin
+
+启动 phpmyadmin，用于查看 MariaDB 数据，创建文件 ./src/main/docker/phpmyadmin.yml
+
+```yaml
+version: '2'
+services:
+  blog-phpmyadmin:
+    image: phpmyadmin/phpmyadmin
+    ports:
+      - '7777:80'
+```
+
+执行
+
+```shell
+docker-compose -f ./src/main/docker/phpmyadmin.yml up -d
+```
+
+打开浏览器 http://localhost:7777
+
+```
+docker run --name phpmyadmin -d -p 7777:80 phpmyadmin/phpmyadmin
+```
+
+## 结合 MariaDB + phpmyadmin
+
+修改文件：./src/main/docker/mariadb.yml
+
+```yaml
+version: '2'
+services:
+  blog-mariadb:
+    image: mariadb:10.5.3
+    # volumes:
+    #     - ~/volumes/jhipster/blog/mysql/:/var/lib/mysql/
+    environment:
+      - MYSQL_USER=root
+      - MYSQL_ALLOW_EMPTY_PASSWORD=yes
+      - MYSQL_DATABASE=blog
+    ports:
+      - 3306:3306
+    command: mysqld --lower_case_table_names=1 --skip-ssl --character_set_server=utf8mb4 --explicit_defaults_for_timestamp
+
+    # Refers to https://github.com/fuadajip/dockercompose-mysql-phpmyadmin
+  blog-phpmyadmin:
+    image: phpmyadmin/phpmyadmin
+    links:
+      - blog-mariadb
+    ports:
+      - '7777:80'
+    environment:
+      - PMA_ARBITRARY=1
+      - PMA_HOST=blog-mariadb
+      - PMA_PORT=3306
+      - PMA_USER=root
+      - PMA_PASSWORD=
+      - MYSQL_PASSWORD=root
+      - MYSQL_ROOT_PASSWORD=
+    restart: always
+```
+
+## 构建 Docker 镜像
+
+使用[Jib](https://github.com/GoogleContainerTools/jib)连接到本地 Docker 守护程序构建应用程序的 Docker 镜像，根据构建工具不同执行以下操作：
+
+- 使用 Maven, 输入: `./mvnw package -Pprod verify jib:dockerBuild`
+- 使用 Gradle, 输入: `./gradlew -Pprod bootJar jibDockerBuild`
+
+在没有 Docker 的情况下构建应用程序的 Docker 镜像并将其直接推送到 Docker 仓库中，根据构建工具不同执行以下操作：
+
+- 使用 Maven, 输入:: `./mvnw package -Pprod verify jib:build`
+- 使用 Gradle, 输入: `./gradlew -Pprod bootJar jib`
+
+执行 `【为了完成测试需要先将支持的环境服务启动】`
+
+```shell
+./mvnw package -Pprod verify jib:dockerBuild
+```
+
+> 会执行前端打包，构建，后端编译，测试，打包，并生成 Dockerfile？
+
+得到
+
+```shell
+[INFO] Using credentials from Docker config (/Users/demo/.docker/config.json) for adoptopenjdk:11-jre-hotspot
+[INFO] Using base image with digest: sha256:9f53368957d42b201dc7b2f1f085067ab6a30ab9d18b9c2a2da6a7512fbdc117
+[INFO]
+[INFO] Container entrypoint set to [bash, -c, /entrypoint.sh]
+[INFO]
+[INFO] Built image to Docker daemon as blog
+[INFO]
+[INFO] A new version of Jib (2.4.0) is available (currently using 2.3.0). Update your build configuration to use the latest features and fixes!
+[INFO] https://github.com/GoogleContainerTools/jib/blob/master/jib-maven-plugin/CHANGELOG.md
+[INFO] Please see https://github.com/GoogleContainerTools/jib/blob/master/docs/privacy.md for info on disabling this update check.
+[INFO]
+[INFO] Executing tasks:
+[INFO] [==============================] 100.0% complete
+[INFO]
+[INFO] ------------------------------------------------------------------------
+[INFO] BUILD SUCCESS
+[INFO] ------------------------------------------------------------------------
+[INFO] Total time:  05:03 min
+[INFO] Finished at: 2020-06-21T22:34:38+08:00
+[INFO] ------------------------------------------------------------------------
+```
+
+检查，执行
+
+```shell
+docker images
+```
+
+得到名为 blog 的镜像
+
+```
+REPOSITORY          TAG     IMAGE ID            CREATED             SIZE
+blog             latest     e5a275f41e16        4 minutes ago       297MB
+```
+
+## 容器整合 docker-compose 启动
+
+执行
+
+```shell
+docker-compose -f app.yml up -d
+```
+
+得到
+
+```
+Creating network "docker_default" with the default driver
+Creating docker_blog-redis_1   ... done
+Creating docker_blog-app_1     ... done
+Creating docker_blog-mariadb_1 ... done
+```
+
+等待 120 秒后（The application will start in 120s...），打开浏览器访问 http://localhost:8080/ 得到
 
 ![welcome](https://raw.githubusercontent.com/zknyy/demo-blog-app/master/screenshot/welcome.png)
 
