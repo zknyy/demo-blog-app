@@ -126,7 +126,7 @@ docker-compose -f ./src/main/docker/redis.yml up -d
 
 浏览器打开 http://localhost:8080/
 
-![welcome](.\screenshot\welcome.png)
+![welcome](https://raw.githubusercontent.com/zknyy/demo-blog-app/master/screenshot/welcome.png)
 
 # [TODO...]
 
