@@ -1,0 +1,10 @@
+version: '2'
+services:
+  blog-mariadb:
+    extends:
+      file: mariadb.yml
+      service: blog-mariadb
+  blog-phpmyadmin:
+    extends:
+      file: phpmyadmin.yml
+      service: blog-phpmyadmin

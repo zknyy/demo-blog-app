@@ -22,3 +22,7 @@ services:
     extends:
       file: redis.yml
       service: blog-redis
+  blog-phpmyadmin:
+    extends:
+      file: phpmyadmin.yml
+      service: blog-phpmyadmin
