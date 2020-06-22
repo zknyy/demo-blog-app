@@ -636,6 +636,139 @@ INFO! Congratulations, JHipster execution is complete!
 
 再重启后就不会有假数据了。
 
+## Blog权限控制
+
+限制blog列表（只取得当前用户相关的blog）；修改文件 com.demo.blog.web.rest.BlogResource 如下
+
+```java
+    @GetMapping("/blogs")
+    public List<Blog> getAllBlogs() {
+        log.debug("REST request to get all Blogs");
+//        return blogRepository.findAll();
+        return blogRepository.findByUserIsCurrentUser();
+    }
+```
+
+限制查看单独的blog；
+
+```java
+    @GetMapping("/blogs/{id}")
+    public ResponseEntity<?> getBlog(@PathVariable Long id) {
+        log.debug("REST request to get Blog : {}", id);
+        Optional<Blog> blog = blogRepository.findById(id);
+        if (blog.isPresent() && blog.get().getUser() != null &&
+            !blog.get().getUser().getLogin().equals(SecurityUtils.getCurrentUserLogin().orElse(""))) {
+            return new ResponseEntity<>("error.http.403", HttpStatus.FORBIDDEN);
+        }
+        return ResponseUtil.wrapOrNotFound(blog);
+    }
+```
+
+## Entry权限控制
+
+限制Entry列表（只取得当前用户相关的entry）；修改文件  /com/demo/blog/web/rest/EntryResource.java 如下
+
+```java
+    @GetMapping("/entries")
+    public ResponseEntity<List<Entry>> getAllEntries(Pageable pageable, @RequestParam(required = false, defaultValue = "false") boolean eagerload) {
+        log.debug("REST request to get a page of Entries");
+        Page<Entry> page;
+        page = entryRepository.findByBlogUserLoginOrderByDateDesc(SecurityUtils.getCurrentUserLogin().orElse(null), pageable);
+//        if (eagerload) {
+//            page = entryRepository.findAllWithEagerRelationships(pageable);
+//        } else {
+//            page = entryRepository.findAll(pageable);
+//        }
+        HttpHeaders headers = PaginationUtil.generatePaginationHttpHeaders(ServletUriComponentsBuilder.fromCurrentRequest(), page);
+        return ResponseEntity.ok().headers(headers).body(page.getContent());
+    }
+```
+
+
+
+修改文件 	com/demo/blog/repository/EntryRepository.java  添加方法 如下
+
+```java
+    Page<Entry> findByBlogUserLoginOrderByDateDesc(String orElse, Pageable pageable);
+```
+
+ 
+
+## 前端改造
+
+如果修改了前端代码，直接运行
+
+```shell
+npm start
+```
+
+得到
+
+```shell
+ DONE  Compiled successfully in 37126ms                 12:14:52 AM
+
+ℹ ｢wdm｣:    518 modules
+ℹ ｢wdm｣: Compiled successfully.
+[Browsersync] Proxying: http://localhost:9060
+[Browsersync] Access URLs:
+ ----------------------------------------
+       Local: http://localhost:9000
+    External: http://192.168.164.133:9000
+ ----------------------------------------
+          UI: http://localhost:3001
+ UI External: http://localhost:3001
+ ----------------------------------------
+
+```
+
+然后打开浏览器，访问 http://localhost:9000
+
+其中 **Browsersync**  使用的是 3001 端口，http://localhost:3001 ；其代理是在9060端口： Proxying: http://localhost:9060
+
+> 关于Browsersync  参考 http://www.browsersync.cn/  （前端同步测试工具，**可以同时在PC、平板、手机等设备下进项调试**）
+
+
+
+# 发布到云平台
+
+## 注册Heroku 账号
+
+网站： https://dashboard.heroku.com/ 
+
+## 安装Heroku客户端工具
+
+网页： https://devcenter.heroku.com/articles/heroku-cli   根据系统安装并配置
+
+```shell
+brew tap heroku/brew && brew install heroku
+```
+
+## 发布到Heroku
+
+执行
+
+```shell
+heroku login
+heroku: Press any key to open up the browser to login or q to exit: 
+Opening browser to https://cli-auth.heroku.com/auth/cli/browser/c9d4f688-974b-453a-b7f2-09e6f0e6b97b
+Logging in... done
+Logged in as zknyy@msn.com
+```
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
