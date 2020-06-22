@@ -1,4 +1,14 @@
-# 演示应用 blog
+# 演示 应用 blog
+
+使用JHipster创建一个演示的blog应用，其中包括的技术点有：
+
+1. JHipster 初始化一个单体应用，编译，打包，启动
+2. 容器化：将应用打包为Docker镜像
+3. 本地服务化：将依赖的 Redis缓存，MariaDB，和 应用 通过docker-compose进行本地服务化
+4. 构建配套的开发工具/环境：Redis 网页/桌面 客户端，MariaDB 网页客户端
+5. 业务逻辑实现：数据库/JDL建模，权限管理设定
+
+
 
 ## 准备
 
@@ -271,6 +281,10 @@ The following profiles are active:
 ----------------------------------------------------------
 ```
 
+# 缓存
+
+Redis  phpRedisAdmin   Docker-compose
+
 ## Redis
 
 启动 Redis 服务
@@ -278,6 +292,63 @@ The following profiles are active:
 ```shell
 docker-compose -f ./src/main/docker/redis.yml up -d
 ```
+
+## Redis 网页客户端 - phpRedisAdmin
+
+项目来源： https://github.com/ErikDubbelboer/phpRedisAdmin
+
+docker 镜像来源： https://hub.docker.com/r/erikdubbelboer/phpredisadmin
+
+创建文件 src/main/docker/phpredisadmin.yml 如下：
+
+```yaml
+version: '2'
+services:
+  blog-phpredisadmin:
+    image: docker.io/erikdubbelboer/phpredisadmin
+    ports:
+      - 7779:80
+    environment:
+      - REDIS_1_HOST=blog-redis   #- define host of the Redis server
+      - REDIS_1_NAME=              # - define name of the Redis server
+      - REDIS_1_PORT=6379         # - define port of the Redis server
+      - REDIS_1_AUTH=              # - define password of the Redis server
+      - ADMIN_USER=                # - define username for user-facing Basic Auth
+      - ADMIN_PASS=                # - define password for user-facing Basic Auth
+
+```
+
+## 结合 Redis + phpRedisAdmin 
+
+创建文件 src/main/docker/redis-redisadmin.yml 如下：
+
+```yaml
+version: '2'
+services:
+  blog-redis:
+    extends:
+      file: redis.yml
+      service: blog-redis
+  blog-phpredisadmin:
+    extends:
+      file: phpredisadmin.yml
+      service: blog-phpredisadmin
+
+```
+
+
+
+
+
+## Redis桌面应用客户端 - Another Redis DeskTop Manager
+
+下载一个客户端应用 https://github.com/qishibo/AnotherRedisDesktopManager/releases
+
+然后删除里面的数据   ---- 【以刷新数据库中的缓存数据】
+
+# 数据库
+
+MariaDB    phpmyadmin   Docker-compose
 
 ## MariaDB
 
@@ -343,7 +414,9 @@ docker-compose -f ./src/main/docker/mariadb-phpmyadmin.yml up -d
 
 
 
+# blog应用  --容器化  --本地服务化
 
+构建 Docker 镜像，  容器整合 docker-compose 启动
 
 ## 构建 Docker 镜像
 
@@ -458,7 +531,7 @@ Creating docker_blog-phpmyadmin_1 ... done
 
 ![welcome](https://raw.githubusercontent.com/zknyy/demo-blog-app/master/screenshot/welcome.png)
 
-# 增强改造
+# 业务改造
 
 为应用加入 DLS 
 
@@ -507,10 +580,61 @@ paginate Entry, Tag with infinite-scroll
 jhipster import-jdl blog.jdl
 ```
 
+得到
+
+```shell
+jhipster import-jdl blog.jdl 
+INFO! Using JHipster version installed locally in current project's node_modules
+INFO! Executing import-jdl blog.jdl
+INFO! Options: from-cli: true, inline: 
+INFO! Found .yo-rc.json on path. This is an existing app
+INFO! The JDL is being parsed.
+warn: An Entity name 'User' was used: 'User' is an entity created by default by JHipster. All relationships toward it will be kept but any attributes and relationships from it will be disregarded.
+INFO! Found entities: Blog, Entry, Tag.
+INFO! The JDL has been successfully parsed
+INFO! Generating 3 entities.
+
+Found the .jhipster/Blog.json configuration file, entity can be automatically generated!
 
 
+The entity Blog is being updated.
+...
+   create src/test/java/com/demo/blog/domain/BlogTest.java
+ conflict src/main/resources/config/liquibase/master.xml
+? Overwrite src/main/resources/config/liquibase/master.xml? overwrite this and all others
+...
+  ✔ Compile modules
+  ✔ Build modules
+  ✔ Optimize modules
+  ✔ Emit files
+
+Webpack: Finished after 33.671 seconds.
 
 
+ DONE  Compiled successfully in 33683ms                                                                                      5:47:01 PM
+
+   485 modules
+INFO! Congratulations, JHipster execution is complete!
+```
+
+> 遇到冲突 【conflict】 选 a ， 会覆盖所有冲突文件。
+
+然后再用 dev, swagger 配置来启动，登陆后会看到3个Entities，如下
+
+![welcome](https://raw.githubusercontent.com/zknyy/demo-blog-app/master/screenshot/three-entities.png)
+
+如果需要去掉假数据则只需要:
+
+1.  去掉文件 `config/application-dev.yml` 中的 `faker` 如下所示
+   ![welcome](https://raw.githubusercontent.com/zknyy/demo-blog-app/master/screenshot/faker.png)
+
+2. 删除dev的数据库目录，执行
+
+   ```shell
+   rm -rf target/h2db
+   ```
+
+再重启后就不会有假数据了。
 
 
 
