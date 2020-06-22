@@ -1,0 +1,13 @@
+version: '2'
+services:
+  blog-phpredisadmin:
+    image: docker.io/erikdubbelboer/phpredisadmin
+    ports:
+      - 7779:80
+    environment:
+      - REDIS_1_HOST=blog-redis #- define host of the Redis server
+      - REDIS_1_NAME= # - define name of the Redis server
+      - REDIS_1_PORT=6379 # - define port of the Redis server
+      - REDIS_1_AUTH= # - define password of the Redis server
+      - ADMIN_USER= # - define username for user-facing Basic Auth
+      - ADMIN_PASS= # - define password for user-facing Basic Auth

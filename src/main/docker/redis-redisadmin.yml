@@ -1,0 +1,10 @@
+version: '2'
+services:
+  blog-redis:
+    extends:
+      file: redis.yml
+      service: blog-redis
+  blog-phpredisadmin:
+    extends:
+      file: phpredisadmin.yml
+      service: blog-phpredisadmin
