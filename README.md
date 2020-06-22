@@ -458,6 +458,64 @@ Creating docker_blog-phpmyadmin_1 ... done
 
 ![welcome](https://raw.githubusercontent.com/zknyy/demo-blog-app/master/screenshot/welcome.png)
 
+# 增强改造
+
+为应用加入 DLS 
+
+## JDL
+
+打开 https://start.jhipster.tech/design-entities  选择 `Design Entities`
+
+在 `Blog` 上 Open 查看得到
+
+![welcome](https://raw.githubusercontent.com/zknyy/demo-blog-app/master/screenshot/JDL.png)
+
+复制所有内容并创建文件 ./blog.jdl
+
+```java
+entity Blog {
+    name String required minlength(3),
+    handle String required minlength(2)
+}
+
+entity Entry {
+	title String required,
+	content String required ,
+    date Instant required
+}
+
+entity Tag {
+	name String required minlength(2)
+}
+
+
+relationship ManyToOne {
+	Blog{user(login)} to User,
+    Entry{blog(name)} to Blog
+}
+
+relationship ManyToMany {
+	Entry{tag(name)} to Tag{entry}
+}
+
+paginate Entry, Tag with infinite-scroll
+```
+
+导入JDL，执行
+
+```shell
+jhipster import-jdl blog.jdl
+```
+
+
+
+
+
+
+
+
+
+
 # [TODO...]
 
 # 以下是 JHipster Readme
