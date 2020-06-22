@@ -743,9 +743,23 @@ npm start
 brew tap heroku/brew && brew install heroku
 ```
 
+查看版本，执行
+
+```shell
+heroku --version
+```
+
+得到
+
+```shell
+heroku/7.42.1 darwin-x64 node-v12.16.2
+```
+
+
+
 ## 发布到Heroku
 
-执行
+先登录，执行
 
 ```shell
 heroku login
@@ -755,13 +769,55 @@ Logging in... done
 Logged in as zknyy@msn.com
 ```
 
+然后发布，执行
 
+```shell
+jhipster heroku
+```
 
+得到
 
+```shell
+INFO! Using JHipster version installed locally in current project's node_modules
+INFO! Executing jhipster:heroku
+INFO! Options: from-cli: true
+Heroku configuration is starting
+? Name to deploy as: zknyyblog
+? On which region do you want to deploy ? us
+? Which type of deployment do you want ? Git (compile on Heroku)
+? Which Java version would you like to use to build and run your app ? 11
 
+Using existing Git repository
 
+Installing Heroku CLI deployment plugin
 
+Creating Heroku application and setting up node environment
+https://zknyyblog.herokuapp.com/ | https://git.heroku.com/zknyyblog.git
 
+Provisioning addons
+No new Database addon created
+
+Creating Heroku deployment files
+    force ../../.yo-rc-global.json
+   create Procfile
+   create system.properties
+ conflict pom.xml
+? Overwrite pom.xml? overwrite this and all others
+    force pom.xml
+    force .yo-rc.json
+   create src/main/resources/config/bootstrap-heroku.yml
+   create src/main/resources/config/application-heroku.yml
+
+Skipping build
+
+Updating Git repository
+git add .
+git commit -m "Deploy to Heroku" --allow-empty
+```
+
+> 注意：中间有几处需要做出选择  **? Overwrite pom.xml? overwrite this and all others**    此处重写，选：所有
+
+这个地方发布有问题，估计是 blog 或 demo-blog-app 这个名称已经被使用。 然后，重新在github起了一个zknyyblog的Repo来发布。
 
 
 
