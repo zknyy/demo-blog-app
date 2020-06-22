@@ -2,6 +2,7 @@ package com.demo.blog.web.rest;
 
 import com.demo.blog.domain.Entry;
 import com.demo.blog.repository.EntryRepository;
+import com.demo.blog.security.SecurityUtils;
 import com.demo.blog.web.rest.errors.BadRequestAlertException;
 
 import io.github.jhipster.web.util.HeaderUtil;
@@ -97,11 +98,12 @@ public class EntryResource {
     public ResponseEntity<List<Entry>> getAllEntries(Pageable pageable, @RequestParam(required = false, defaultValue = "false") boolean eagerload) {
         log.debug("REST request to get a page of Entries");
         Page<Entry> page;
-        if (eagerload) {
-            page = entryRepository.findAllWithEagerRelationships(pageable);
-        } else {
-            page = entryRepository.findAll(pageable);
-        }
+        page = entryRepository.findByBlogUserLoginOrderByDateDesc(SecurityUtils.getCurrentUserLogin().orElse(null), pageable);
+//        if (eagerload) {
+//            page = entryRepository.findAllWithEagerRelationships(pageable);
+//        } else {
+//            page = entryRepository.findAll(pageable);
+//        }
         HttpHeaders headers = PaginationUtil.generatePaginationHttpHeaders(ServletUriComponentsBuilder.fromCurrentRequest(), page);
         return ResponseEntity.ok().headers(headers).body(page.getContent());
     }
